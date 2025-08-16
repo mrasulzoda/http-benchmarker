@@ -1,3 +1,18 @@
+## 📜 License
+
+This project uses the [Creative Commons Attribution-NonCommercial 4.0 International] license (LICENSE).
+
+You can:
+- ⬇️ Download and use the project
+- 📝 Study and change the code
+- ↔️ Distribute original and derivative works
+
+Under the following conditions:
+- 👤 **Attribution** — You must indicate the author and link to the license.
+- 🚫 **Non-commercial use** — Commercial use is prohibited
+
+[![CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc/4.0/)
+
 # HTTP Benchmarker
 
 A simple tool for load testing HTTP servers.
