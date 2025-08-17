@@ -1,12 +1,10 @@
 import click
 import asyncio
-from .bench import run_benchmark
+from http_benchmarker.bench import run_benchmark
 import sys
 import platform
 from click import style
 
-
-# Setting for encoding
 if sys.version_info[0] == 3 and sys.stdout.encoding != 'UTF-8':
     try:
         sys.stdout = open(sys.stdout.fileno(), mode='w', 
@@ -14,7 +12,6 @@ if sys.version_info[0] == 3 and sys.stdout.encoding != 'UTF-8':
     except:
         pass
 
-# Defining symbols for different platforms
 if platform.system() == "Windows":
     SYMBOLS = {
         "rocket": "==>",
@@ -23,38 +20,20 @@ if platform.system() == "Windows":
         "results": "==== RESULTS ====",
         "bar": "#"
     }
-   
+ 
     try:
         import colorama
         colorama.init()
     except ImportError:
         pass
 else:
-    if sys.stdout.encoding.lower() in ('utf-8', 'utf8'):
-        SYMBOLS = {
-            "rocket": "🚀",
-            "success": "✅",
-            "error": "🔥",
-            "results": "📊",
-            "bar": "█"
-        }
-    else:
-        SYMBOLS = {
-            "rocket": "=>",
-            "success": "[OK]",
-            "error": "[ERR]",
-            "results": "[RES]",
-            "bar": "#"
-        }
-
-def print_progress(current, total):
-    """Prints a text progress bar"""
-    width = 50
-    progress = int(width * current / total)
-    bar = SYMBOLS["bar"] * progress + '.' * (width - progress)
-    percent = int(100 * current / total)
-    sys.stdout.write(f"\r[{bar}] {percent}% ")
-    sys.stdout.flush()
+    SYMBOLS = {
+        "rocket": "=>",
+        "success": "[OK]",
+        "error": "[ERR]",
+        "results": "[RES]",
+        "bar": "█"
+    }
 
 @click.group()
 def cli():
@@ -83,7 +62,7 @@ def bench(url, requests, concurrency, timeout, method):
             timeout=timeout
         ))
         
-        # Printing results
+        # Displaying the results
         click.echo(style(f"\n{SYMBOLS['results']} Performance Summary", fg="green", bold=True))
         click.echo(style("-" * 60, fg="yellow"))
         
@@ -93,7 +72,7 @@ def bench(url, requests, concurrency, timeout, method):
         click.echo(style(f"{'Requests/sec:':<20}", fg="cyan") + 
                   style(f"{results['rps']:.2f}", bold=True))
         
-        # Success rate status with color
+        # Success rate status with color 
         success_color = "green" if results['success_rate'] > 95 else "yellow" if results['success_rate'] > 80 else "red"
         click.echo(style(f"{'Success rate:':<20}", fg="cyan") + 
                   style(f"{results['success_rate']:.2f}%", fg=success_color, bold=True))
@@ -119,8 +98,6 @@ def bench(url, requests, concurrency, timeout, method):
     
     except Exception as e:
         click.echo(style(f"\n{SYMBOLS['error']} Error: {str(e)}", fg="red", bold=True))
-        if requests > 1000:
-            click.echo(style("Tip: Try with fewer requests using --requests 100", fg="yellow"))
 
 if __name__ == "__main__":
     cli()

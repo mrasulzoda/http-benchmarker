@@ -4,6 +4,7 @@ import time
 import numpy as np
 import logging
 import sys
+from tqdm import tqdm  
 
 # Logger setup
 logging.basicConfig(
@@ -14,9 +15,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 async def fetch(session, url, method="GET", headers=None, timeout=10):
+    """Выполняет один HTTP-запрос и возвращает результат"""
     start_time = time.monotonic()
     request_headers = headers or {
-        "User-Agent": "HTTP Benchmarker/0.1"
+        "User-Agent": "HTTP Benchmarker/1.0"
     }
     
     try:
@@ -44,21 +46,36 @@ async def fetch(session, url, method="GET", headers=None, timeout=10):
             "success": False
         }
 
-async def run_benchmark(url, total_requests, concurrency, method="GET", timeout=10):
+async def run_benchmark(url, total_requests, concurrency, method="GET", headers=None, timeout=10):
     """The main function for performing load testing"""
     start_time = time.time()
     logger.info(f"Starting benchmark for {url}")
     
     connector = aiohttp.TCPConnector(limit=concurrency)
     async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [fetch(session, url, method, timeout=timeout) 
-                for _ in range(total_requests)]
+        # Create a progress bar
+        pbar = tqdm(
+            total=total_requests, 
+            desc="Sending requests", 
+            unit="req",
+            dynamic_ncols=True,   
+            bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]"
+        )
         
+        #  Create tasks with a callback to update the progress bar
+        tasks = []
+        for _ in range(total_requests):
+            task = asyncio.create_task(fetch(session, url, method, headers, timeout))
+            task.add_done_callback(lambda _: pbar.update(1))
+            tasks.append(task)
+        
+        # Waiting for all tasks to be completed.
         results = await asyncio.gather(*tasks)
+        pbar.close()
     
     total_time = time.time() - start_time
     
-    # Collecting statistics
+    # Collects statistics
     latencies = [r['latency'] for r in results if 'latency' in r]
     success_count = sum(1 for r in results if r.get('success', False))
     status_codes = {}
