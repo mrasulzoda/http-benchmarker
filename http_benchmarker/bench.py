@@ -39,9 +39,10 @@ async def fetch(session, url, method="GET", headers=None, timeout=10):
             }
     except Exception as e:
         latency = (time.monotonic() - start_time) * 1000
+        error_msg = str(e) or f"{type(e).__name__} (no message)"
         logger.error(f"Request failed: {str(e)}")
         return {
-            "error": str(e),
+            "error": error_msg,
             "latency": latency,
             "success": False
         }
@@ -50,7 +51,14 @@ async def run_benchmark(url, total_requests, concurrency, method="GET", headers=
     """The main function for performing load testing"""
     start_time = time.time()
     logger.info(f"Starting benchmark for {url}")
-    
+    parameters = {
+        "url": url,
+        "method": method,
+        "total_requests": total_requests,
+        "concurrency": concurrency,
+        "timeout": timeout,
+        "headers": headers
+    }
     connector = aiohttp.TCPConnector(limit=concurrency)
     async with aiohttp.ClientSession(connector=connector) as session:
         # Create a progress bar
@@ -92,6 +100,10 @@ async def run_benchmark(url, total_requests, concurrency, method="GET", headers=
         # Collecting errors
         if 'error' in r:
             error_msg = r['error']
+            
+            if not error_msg.strip():
+                error_msg = "Unknown error"
+
             if error_msg not in errors:
                 errors[error_msg] = 0
             errors[error_msg] += 1
@@ -131,4 +143,9 @@ async def run_benchmark(url, total_requests, concurrency, method="GET", headers=
             "p99": 0
         })
     
+    metrics["start_time"] = start_time
+    metrics["end_time"] = time.time()
+    metrics["duration"] = total_time
+    metrics["parameters"] = parameters
+
     return metrics
