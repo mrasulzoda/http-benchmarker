@@ -4,7 +4,7 @@ import time
 import numpy as np
 import logging
 import sys
-from tqdm import tqdm  
+from tqdm import tqdm
 
 # Logger setup
 logging.basicConfig(
@@ -15,7 +15,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 async def fetch(session, url, method="GET", headers=None, timeout=10):
-    """Выполняет один HTTP-запрос и возвращает результат"""
+    """Performs an HTTP request and returns the result"""
     start_time = time.monotonic()
     request_headers = headers or {
         "User-Agent": "HTTP Benchmarker/1.0"
@@ -58,11 +58,11 @@ async def run_benchmark(url, total_requests, concurrency, method="GET", headers=
             total=total_requests, 
             desc="Sending requests", 
             unit="req",
-            dynamic_ncols=True,   
+            dynamic_ncols=True,
             bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]"
         )
         
-        #  Create tasks with a callback to update the progress bar
+        # Create tasks with a callback to update the progress bar
         tasks = []
         for _ in range(total_requests):
             task = asyncio.create_task(fetch(session, url, method, headers, timeout))
@@ -79,10 +79,22 @@ async def run_benchmark(url, total_requests, concurrency, method="GET", headers=
     latencies = [r['latency'] for r in results if 'latency' in r]
     success_count = sum(1 for r in results if r.get('success', False))
     status_codes = {}
+    errors = {} 
     
     for r in results:
         status = r.get('status', 'error')
-        status_codes[status] = status_codes.get(status, 0) + 1
+        status_str = str(status)
+        
+        if status_str not in status_codes:
+            status_codes[status_str] = 0
+        status_codes[status_str] += 1
+        
+        # Collecting errors
+        if 'error' in r:
+            error_msg = r['error']
+            if error_msg not in errors:
+                errors[error_msg] = 0
+            errors[error_msg] += 1
     
     # Calculating metrics
     metrics = {
@@ -91,7 +103,8 @@ async def run_benchmark(url, total_requests, concurrency, method="GET", headers=
         "success_count": success_count,
         "success_rate": (success_count / total_requests) * 100 if total_requests else 0,
         "rps": total_requests / total_time if total_time > 0 else 0,
-        "status_codes": status_codes
+        "status_codes": status_codes,
+        "errors": errors
     }
     
     # Add statistics on delays if there is data

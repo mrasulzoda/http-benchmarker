@@ -1,39 +1,21 @@
 import click
 import asyncio
-from http_benchmarker.bench import run_benchmark
 import sys
 import platform
 from click import style
 
-if sys.version_info[0] == 3 and sys.stdout.encoding != 'UTF-8':
-    try:
-        sys.stdout = open(sys.stdout.fileno(), mode='w', 
-                         encoding='utf-8', buffering=1)
-    except:
-        pass
+try:
+    from http_benchmarker.bench import run_benchmark
+except ImportError:
+    from bench import run_benchmark
 
-if platform.system() == "Windows":
-    SYMBOLS = {
-        "rocket": "==>",
-        "success": "[OK]",
-        "error": "[ERROR]",
-        "results": "==== RESULTS ====",
-        "bar": "#"
-    }
- 
-    try:
-        import colorama
-        colorama.init()
-    except ImportError:
-        pass
-else:
-    SYMBOLS = {
-        "rocket": "=>",
-        "success": "[OK]",
-        "error": "[ERR]",
-        "results": "[RES]",
-        "bar": "█"
-    }
+SYMBOLS = {
+    "rocket": "=>",
+    "success": "[OK]",
+    "error": "[ERR]",
+    "results": "[RES]",
+    "bar": "#"
+}
 
 @click.group()
 def cli():
@@ -53,7 +35,7 @@ def bench(url, requests, concurrency, timeout, method):
         click.echo(style(f"{SYMBOLS['rocket']} Benchmarking {method} {url}", fg="blue", bold=True))
         click.echo(style(f"Requests: {requests}, Concurrency: {concurrency}, Timeout: {timeout}s", fg="cyan"))
         
-        # Runs the test
+        # Running the test
         results = asyncio.run(run_benchmark(
             url, 
             requests, 
@@ -66,16 +48,17 @@ def bench(url, requests, concurrency, timeout, method):
         click.echo(style(f"\n{SYMBOLS['results']} Performance Summary", fg="green", bold=True))
         click.echo(style("-" * 60, fg="yellow"))
         
-        # Key metrics
+        # Key Metrics
         click.echo(style(f"{'Total time:':<20}", fg="cyan") + 
                   style(f"{results['total_time']:.2f}s", bold=True))
         click.echo(style(f"{'Requests/sec:':<20}", fg="cyan") + 
                   style(f"{results['rps']:.2f}", bold=True))
         
-        # Success rate status with color 
-        success_color = "green" if results['success_rate'] > 95 else "yellow" if results['success_rate'] > 80 else "red"
+        # Success rate status
+        success_rate = results['success_rate']
+        success_color = "green" if success_rate > 95 else "yellow" if success_rate > 80 else "red"
         click.echo(style(f"{'Success rate:':<20}", fg="cyan") + 
-                  style(f"{results['success_rate']:.2f}%", fg=success_color, bold=True))
+                  style(f"{success_rate:.2f}%", fg=success_color, bold=True))
         
         # Delay statistics
         click.echo(style(f"\n{SYMBOLS['results']} Latency Metrics (ms)", fg="green", bold=True))
@@ -93,11 +76,21 @@ def bench(url, requests, concurrency, timeout, method):
             click.echo(style(f"\n{SYMBOLS['results']} Status Codes", fg="green", bold=True))
             click.echo(style("-" * 60, fg="yellow"))
             for code, count in results['status_codes'].items():
-                color = "green" if 200 <= code < 300 else "yellow" if 300 <= code < 400 else "red" if 400 <= code < 600 else "cyan"
+                try:
+                    code_int = int(code)
+                    color = "green" if 200 <= code_int < 300 else "yellow" if 300 <= code_int < 400 else "red" if 400 <= code_int < 600 else "cyan"
+                except ValueError:
+                    color = "red"
                 click.echo(style(f"{code}:", fg=color, bold=True) + f" {count} requests")
+        
+        if results.get('errors'):
+            click.echo(style(f"\n{SYMBOLS['error']} Errors Summary", fg="red", bold=True))
+            click.echo(style("-" * 60, fg="yellow"))
+            for error, count in results['errors'].items():
+                click.echo(style(f"{error}:", fg="red") + f" {count} occurrences")
     
     except Exception as e:
-        click.echo(style(f"\n{SYMBOLS['error']} Error: {str(e)}", fg="red", bold=True))
+        click.echo(style(f"\n{SYMBOLS['error']} Critical Error: {str(e)}", fg="red", bold=True))
 
 if __name__ == "__main__":
     cli()
