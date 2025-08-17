@@ -29,27 +29,28 @@ python -m http_benchmarker.cli check https://httpbin.org/get
 ```
 ## Output example
 ```bash
-🚀 Benchmarking GET https://httpbin.org/get
-Requests: 3, Concurrency: 10, Timeout: 10s
-2025-08-16 23:20:20,774 - INFO - Starting benchmark for https://httpbin.org/get
+=> Benchmarking GET https://httpbin.org/get
+Requests: 100, Concurrency: 10, Timeout: 10s
+2025-08-17 10:15:33,820 - INFO - Starting benchmark for https://httpbin.org/get
+Sending requests: 100%|████████████████████| 100/100 [00:04<00:00, 20.57req/s]
 
-📊 Performance Summary
+[RES] Performance Summary
 ------------------------------------------------------------
-Total time:         1.26s
-Requests/sec:       2.39
+Total time:         4.87s
+Requests/sec:       20.54
 Success rate:       100.00%
 
-📊 Latency Metrics (ms)
+[RES] Latency Metrics (ms)
 ------------------------------------------------------------
-Average:  1122.79
-Min:      1057.08
-Max:      1253.70
-p50:      1057.60
-p90:      1214.48
-p95:      1234.09
-p99:      1249.78
+Average:  2993.57
+Min:      1133.80
+Max:      4849.47
+p50:      3062.11
+p90:      4524.57
+p95:      4743.53
+p99:      4839.26
 
-📊 Status Codes
+[RES] Status Codes
 ------------------------------------------------------------
-200: 3 requests
+200: 100 requests
 ```
