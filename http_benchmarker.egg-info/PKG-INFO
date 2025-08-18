@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: http-benchmarker
-Version: 0.1.0
+Version: 0.1.1
 Summary: Advanced HTTP load testing tool with real-time progress monitoring and detailed performance reports.
 Author-email: Rasulzoda Muhammadmahdi <mrasulzoda@yandex.ru>
 License: CC-BY-NC-4.0
@@ -84,7 +84,7 @@ http_benchmarker bench https://api.example.com/data \
   --json-file data.json
 ```
 
-### POST request with JSON data from a file
+### PUT request with JSON data from a file
 
 ```bash
 http_benchmarker bench https://api.example.com/data \
