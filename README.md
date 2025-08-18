@@ -26,13 +26,13 @@ pip install -r requirements.txt
 
 ## Basic Usage
 
-### Запуск теста с параметрами по умолчанию (100 запросов, 10 потоков)
+### Running the test with default parameters (100 requests, 10 threads)
 
 ```bash
-python -m http_benchmarker.cli bench https://example.com
+python -m http_benchmarker.cli bench https://api.example.com/get
 
 ```
-### Расширенный тест с кастомными параметрами
+### Advanced test with custom parameters
 
 ```bash
 python -m http_benchmarker.cli bench https://api.example.com/data \
@@ -41,7 +41,7 @@ python -m http_benchmarker.cli bench https://api.example.com/data \
   --timeout 5
 ```
 
-### POST запрос с JSON данными из файла
+### POST request with JSON data from a file
 
 ```bash
 python -m http_benchmarker.cli bench https://api.example.com/data \
@@ -49,7 +49,7 @@ python -m http_benchmarker.cli bench https://api.example.com/data \
   --json-file data.json
 ```
 
-### PUT запрос с JSON данными из файла
+### PUT request with JSON data from a file
 
 ```bash
 python -m http_benchmarker.cli bench https://api.example.com/data \
