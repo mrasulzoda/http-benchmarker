@@ -61,7 +61,7 @@ http_benchmarker bench https://api.example.com/data \
   --json-file data.json
 ```
 
-### POST request with JSON data from a file
+### PUT request with JSON data from a file
 
 ```bash
 http_benchmarker bench https://api.example.com/data \
