@@ -4,6 +4,7 @@ Version: 0.1.0
 Summary: Advanced HTTP load testing tool with real-time progress monitoring and detailed performance reports.
 Author-email: Rasulzoda Muhammadmahdi <mrasulzoda@yandex.ru>
 License: CC-BY-NC-4.0
+Project-URL: Repository, https://github.com/mrasulzoda/http-benchmarker
 Keywords: benchmark,http,cli,load-testing
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: Other/Proprietary License
@@ -17,6 +18,7 @@ Requires-Dist: aiohttp>=3.9.0
 Requires-Dist: click>=8.1.0
 Requires-Dist: numpy>=1.26.0
 Requires-Dist: tqdm>=4.66.0
+Requires-Dist: colorama>=0.4.0
 Dynamic: license-file
 
 # HTTP Benchmarker

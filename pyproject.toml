@@ -21,8 +21,12 @@ dependencies = [
     "aiohttp>=3.9.0",
     "click>=8.1.0",
     "numpy>=1.26.0",
-    "tqdm>=4.66.0"
+    "tqdm>=4.66.0",
+    "colorama>=0.4.0"
 ]
+
+[project.urls]
+Repository = "https://github.com/mrasulzoda/http-benchmarker"
 
 [project.scripts]
 http_benchmarker = "http_benchmarker.cli:main"

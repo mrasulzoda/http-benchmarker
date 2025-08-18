@@ -2,3 +2,4 @@ aiohttp==3.9.3
 click==8.1.7
 numpy==1.26.4
 tqdm==4.66.1
+colorama==0.4.6
