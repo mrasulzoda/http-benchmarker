@@ -8,34 +8,46 @@ Advanced HTTP load testing tool with real-time progress monitoring and detailed 
 
 ## Features
 
-- ⚡ **Asynchronous requests** for high-concurrency testing
-- 📊 **Comprehensive metrics**: RPS, latency percentiles, success rate
-- 🚀 **Real-time progress** with TQDM integration
-- 📝 **Detailed error reporting** with error grouping
-- 💾 **Automatic report generation** (text/JSON)
-- 📈 **Statistical analysis**: p50, p90, p95, p99 latency
+- ⚡ **Asynchronous requests** for high-concurrency testing  
+- 📊 **Comprehensive metrics**: RPS, latency percentiles, success rate  
+- 🚀 **Real-time progress** with TQDM integration  
+- 📝 **Detailed error reporting** with error grouping  
+- 💾 **Automatic report generation** (text/JSON)  
+- 📈 **Statistical analysis**: p50, p90, p95, p99 latency  
 - 🎨 **Color-coded terminal output**
 
+---
+
 ## Installation
+
+### From PyPI (recommended)
+
+```bash
+pip install http-benchmarker
+```
+
+### From source (development version)
 
 ```bash
 git clone https://github.com/your-profile/http-benchmarker.git
 cd http-benchmarker
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ## Basic Usage
 
-### Running the test with default parameters (100 requests, 10 threads)
+Run HTTP benchmark tests from the command line using the http_benchmarker command.
+
+### Default test (100 requests, 10 concurrency)
 
 ```bash
-python -m http_benchmarker.cli bench https://api.example.com/get
-
+http_benchmarker bench https://api.example.com/get
 ```
+
 ### Advanced test with custom parameters
 
 ```bash
-python -m http_benchmarker.cli bench https://api.example.com/data \
+http_benchmarker bench https://api.example.com/data \
   --requests 500 \
   --concurrency 50 \
   --timeout 5
@@ -44,54 +56,54 @@ python -m http_benchmarker.cli bench https://api.example.com/data \
 ### POST request with JSON data from a file
 
 ```bash
-python -m http_benchmarker.cli bench https://api.example.com/data \
+http_benchmarker bench https://api.example.com/data \
   --method POST \
   --json-file data.json
 ```
 
-### PUT request with JSON data from a file
+### POST request with JSON data from a file
 
 ```bash
-python -m http_benchmarker.cli bench https://api.example.com/data \
+http_benchmarker bench https://api.example.com/data \
   --method PUT \
   --json-file update.json \
   --requests 500 \
   --concurrency 50
 ```
 
-### Save results to a report file:
+### Save results to a report file
 
 ```bash
 # Save as text report
-python -m http_benchmarker.cli bench https://api.example.com --save-report
+http_benchmarker bench https://api.example.com --save-report
 
 # Save as JSON report
-python -m http_benchmarker.cli bench https://api.example.com --save-report --json-report
+http_benchmarker bench https://api.example.com --save-report --json-report
 ```
-# Report Files
 
-### Reports are automatically saved with timestamped filenames:
+## Report Files
 
--  reports/http_benchmark_20250817_101533.txt
--  reports/http_benchmark_20250817_101533.json
+Reports are automatically saved with timestamped filenames:
+
+- reports/http_benchmark_20250817_101533.txt
+
+- reports/http_benchmark_20250817_101533.json
 
 ## Command Options
 
-| Option             | Description                          | Default     |
- |--------------------|--------------------------------------|-------------|
- | URL                | Target URL to test                   | Required    |
- | -r, --requests     | Total number of requests             | 100         |
- | -c, --concurrency  | Concurrent connections               | 10          |
- | -t, --timeout      | Request timeout (seconds)            | 10          |
- | -m, --method       | HTTP method (GET,POST,PUT)           | GET         |
- | --json-file        | Path to the JSON file with the       |             |
- |                    | request body                         | None        |
- | --save-report      | Save results to file                 | False       |
- | --json-report      | Save in JSON format                  | False       |
- | --report-dir       | Reports directory                    | reports     |
+| Option             | Description                                    | Default     |
+ |--------------------|-----------------------------------------------|-------------|
+ | URL                | Target URL to test                            | Required    |
+ | -r, --requests     | Total number of requests                      | 100         |
+ | -c, --concurrency  | Concurrent connections                        | 10          |
+ | -t, --timeout      | Request timeout (seconds)                     | 10          |
+ | -m, --method       | HTTP method (GET,POST,PUT)                    | GET         |
+ | --json-file        | Path to the JSON file with the request body   |None         |
+ | --save-report      | Save results to file                          | False       |
+ | --json-report      | Save in JSON format                           | False       |
+ | --report-dir       | Reports directory                             | reports     |
 
-
-# 📜 License
+ # 📜 License
 
 This project uses the Creative Commons Attribution-NonCommercial 4.0 International license.
 
