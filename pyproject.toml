@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "CC-BY-NC-4.0"}
 authors = [
-  { name="Rasulzoda Muhammadmahdi", email="mrasulzoda@mail.ru", github }
+  { name="Rasulzoda Muhammadmahdi", email="mrasulzoda@yandex.ru" }
 ]
 keywords = ["benchmark", "http", "cli", "load-testing"]
 classifiers = [
