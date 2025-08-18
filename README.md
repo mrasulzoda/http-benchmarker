@@ -29,7 +29,7 @@ pip install http-benchmarker
 ### From source (development version)
 
 ```bash
-git clone https://github.com/your-profile/http-benchmarker.git
+git clone https://github.com/mrasulzoda/http-benchmarker.git
 cd http-benchmarker
 pip install -e .
 ```
@@ -98,7 +98,7 @@ Reports are automatically saved with timestamped filenames:
  | -c, --concurrency  | Concurrent connections                        | 10          |
  | -t, --timeout      | Request timeout (seconds)                     | 10          |
  | -m, --method       | HTTP method (GET,POST,PUT)                    | GET         |
- | --json-file        | Path to the JSON file with the request body   |None         |
+ | --json-file        | Path to the JSON file with the request body   | None        |
  | --save-report      | Save results to file                          | False       |
  | --json-report      | Save in JSON format                           | False       |
  | --report-dir       | Reports directory                             | reports     |

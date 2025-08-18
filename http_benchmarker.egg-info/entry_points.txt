@@ -1,2 +1,0 @@
-[console_scripts]
-http_benchmarker = http_benchmarker.cli:main
