@@ -14,19 +14,23 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-async def fetch(session, url, method="GET", headers=None, timeout=10):
+async def fetch(session, url, method="GET", headers=None, timeout=10, json_data=None):
     """Performs an HTTP request and returns the result"""
     start_time = time.monotonic()
     request_headers = headers or {
-        "User-Agent": "HTTP Benchmarker/1.0"
+        "User-Agent": "HTTP Benchmarker/1.0",
+        "Content-Type": "application/json" if json_data else None
     }
+    # Remove None values from headers
+    request_headers = {k: v for k, v in request_headers.items() if v is not None}
     
     try:
         async with session.request(
             method, 
             url, 
             headers=request_headers, 
-            timeout=timeout
+            timeout=timeout,
+            data=json_data
         ) as response:
             # Read the entire response body for accurate measurement
             await response.read()
@@ -47,7 +51,7 @@ async def fetch(session, url, method="GET", headers=None, timeout=10):
             "success": False
         }
 
-async def run_benchmark(url, total_requests, concurrency, method="GET", headers=None, timeout=10):
+async def run_benchmark(url, total_requests, concurrency, method="GET", headers=None, timeout=10, json_data=None):
     """The main function for performing load testing"""
     start_time = time.time()
     logger.info(f"Starting benchmark for {url}")
@@ -57,7 +61,8 @@ async def run_benchmark(url, total_requests, concurrency, method="GET", headers=
         "total_requests": total_requests,
         "concurrency": concurrency,
         "timeout": timeout,
-        "headers": headers
+        "headers": headers,
+        "json_data": bool(json_data)
     }
     connector = aiohttp.TCPConnector(limit=concurrency)
     async with aiohttp.ClientSession(connector=connector) as session:
@@ -73,7 +78,7 @@ async def run_benchmark(url, total_requests, concurrency, method="GET", headers=
         # Create tasks with a callback to update the progress bar
         tasks = []
         for _ in range(total_requests):
-            task = asyncio.create_task(fetch(session, url, method, headers, timeout))
+            task = asyncio.create_task(fetch(session, url, method, headers, timeout, json_data))
             task.add_done_callback(lambda _: pbar.update(1))
             tasks.append(task)
         

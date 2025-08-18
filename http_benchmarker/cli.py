@@ -91,15 +91,27 @@ def cli():
 @click.option("-c", "--concurrency", default=10, help="Concurrent connections")
 @click.option("-t", "--timeout", default=10, help="Request timeout in seconds")
 @click.option("-m", "--method", default="GET", help="HTTP method")
+@click.option("--json-file", type=click.Path(exists=True), help="Path to JSON file for request body")
 @click.option("--save-report", is_flag=True, help="Save results to a file")
 @click.option("--report-dir", default="reports", help="Directory to save reports")
 @click.option("--json-report", is_flag=True, help="Save report in JSON format")
-def bench(url, requests, concurrency, timeout, method, save_report, report_dir, json_report):
+def bench(url, requests, concurrency, timeout, method, json_file, save_report, report_dir, json_report):
     """Run HTTP benchmark test"""
     try:
         # Displaying information about the test
         click.echo(style(f"{SYMBOLS['rocket']} Benchmarking {method} {url}", fg="blue", bold=True))
         click.echo(style(f"Requests: {requests}, Concurrency: {concurrency}, Timeout: {timeout}s", fg="cyan"))
+        
+        # Read JSON file if provided
+        json_data = None
+        if json_file:
+            try:
+                with open(json_file, 'r') as f:
+                    json_data = f.read()
+                click.echo(style(f"Using JSON data from: {json_file}", fg="cyan"))
+            except Exception as e:
+                click.echo(style(f"{SYMBOLS['error']} Failed to read JSON file: {str(e)}", fg="red"))
+                return
         
         # Running the test
         results = asyncio.run(run_benchmark(
@@ -107,7 +119,8 @@ def bench(url, requests, concurrency, timeout, method, save_report, report_dir, 
             requests, 
             concurrency,
             method=method,
-            timeout=timeout
+            timeout=timeout,
+            json_data=json_data
         ))
         
         # Displaying the results
