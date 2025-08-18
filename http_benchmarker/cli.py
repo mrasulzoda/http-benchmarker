@@ -188,5 +188,8 @@ def bench(url, requests, concurrency, timeout, method, json_file, save_report, r
     except Exception as e:
         click.echo(style(f"\n{SYMBOLS['error']} Critical Error: {str(e)}", fg="red", bold=True))
 
+def main():
+    cli()
+
 if __name__ == "__main__":
     cli()

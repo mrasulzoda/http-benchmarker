@@ -1,0 +1,33 @@
+[project]
+name = "http-benchmarker"
+version = "0.1.0"
+description = "Advanced HTTP load testing tool with real-time progress monitoring and detailed performance reports."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "CC-BY-NC-4.0"}
+authors = [
+  { name="Rasulzoda Muhammadmahdi", email="mrasulzoda@mail.ru", github }
+]
+keywords = ["benchmark", "http", "cli", "load-testing"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Topic :: Software Development :: Testing",
+]
+
+dependencies = [
+    "aiohttp>=3.9.0",
+    "click>=8.1.0"
+    "numpy>=1.26.0"
+    "tqdm>=4.66.0"
+]
+
+[project.scripts]
+http_benchmarker = "http_benchmarker.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
